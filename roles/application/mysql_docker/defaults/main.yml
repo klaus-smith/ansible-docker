@@ -1,0 +1,12 @@
+# MySQL 
+mysql_root_password: "{{ lookup('password', mysql_passwd_tmpfile + ' length=20 chars=ascii_letters,digits') }}"
+mysql_passwd_tmpfile: /tmp/mysqlpasswd.file
+mysql_host_nat: 10.12.0.117
+mysql_port_nat: 8000
+mysql_port: 3306
+mysql_version: 5.5
+
+# Wordpress
+wordpress_db_user: wp-remote-user
+wordpress_db_password: 12345
+wordpress_db_name: wp

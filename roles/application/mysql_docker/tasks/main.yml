@@ -1,0 +1,19 @@
+- name: Using NAT
+  shell: ip addr add 10.12.0.117/21 dev enp0s3
+
+- name: Create a MySQL
+  docker_container:
+    name: ubuntu_mysql
+    image: mysql:{{ mysql_version }}
+    state: started
+    detach: yes
+    ports:
+      - "{{ mysql_host_nat }}:{{ mysql_port_nat }}:{{ mysql_port }}/tcp"
+    env: 
+        MYSQL_ROOT_PASSWORD={{ mysql_root_password }}
+
+- name: Wait a few minutes for the IPs to be set to the container
+  wait_for: timeout=99
+
+- name: Add a MySQL remote user
+  shell: docker exec -i ubuntu_mysql mysql -uroot -p{{ mysql_root_password }} -e "CREATE DATABASE {{ wordpress_db_name }}; CREATE USER '{{ wordpress_db_user }}'@'localhost' IDENTIFIED BY '{{ wordpress_db_password }}';CREATE USER '{{ wordpress_db_user }}'@'%' IDENTIFIED BY '{{ wordpress_db_password }}'; GRANT ALL ON wp.* TO '{{ wordpress_db_user }}'@'localhost'; GRANT ALL ON wp.* TO '{{ wordpress_db_user }}'@'%'; FLUSH PRIVILEGES;"

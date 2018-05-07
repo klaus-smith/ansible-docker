@@ -1,0 +1,17 @@
+- name: Add route for MySQL container 
+  shell: route add -net 10.12.0.0 netmask 255.255.248.0 gw {{ wordpress_host_vbox }} 
+
+- name: Create a Wordpress container
+  docker_container:
+    name: ubuntu_wordpress
+    image: wordpress:{{ wordpress_version }}
+    state: started
+    detach: yes
+    ports:
+     - "{{ wordpress_port }}:{{ wordpress_port }}"
+    env: 
+       DB_HOST={{ mysql_host_nat }}:{{ mysql_port }}
+       DB_USER={{ wordpress_db_user }}
+       DB_PASSWORD={{ wordpress_db_password }}
+       DB_NAME={{ wordpress_db_name }}
+

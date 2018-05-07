@@ -1,0 +1,3 @@
+[defaults]
+roles_path = ~/src/ansible_docker_demo/roles
+inventory = ~/src/ansible_docker_demo/environment/
